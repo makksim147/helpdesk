@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Создание заявки - HelpDesk</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="navbar">
+  <div class="logo">HelpDesk</div>
+  <div class="nav-links">
+    <a th:href="@{/tickets/my}">Мои заявки</a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+      <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
+    </form>
+  </div>
+</div>
+<div class="container">
+  <h1 class="page-title">Создание новой заявки</h1>
+  <div class="card" style="max-width: 600px;">
+    <form th:action="@{/tickets/create}" method="post">
+      <div class="form-group">
+        <label>Название</label>
+        <input type="text" name="title" required>
+      </div>
+      <div class="form-group">
+        <label>Описание</label>
+        <textarea name="description" rows="5" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Категория</label>
+        <select name="categoryId" required>
+          <option value="">-- Выберите категорию --</option>
+          <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Приоритет</label>
+        <select name="priority" required>
+          <option th:each="p : ${priorities}" th:value="${p}" th:text="${p}"></option>
+        </select>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button type="submit" class="btn btn-green">Создать заявку</button>
+        <a th:href="@{/tickets/my}" class="btn btn-red">Отмена</a>
+      </div>
+    </form>
+  </div>
+</div>
+</body>
+</html>

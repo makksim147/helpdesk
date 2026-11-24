@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Мои заявки - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">HelpDesk</div>
+    <div class="nav-links">
+        <a th:href="@{/tickets/my}">Мои заявки</a>
+        <span th:text="${username}">User</span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <h1 class="page-title">Мои заявки</h1>
+
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
+        <a th:href="@{/tickets/create}" class="btn btn-green">Создать новую заявку</a>
+    </div>
+
+    <div class="table-wrapper" th:if="${!tickets.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Название</th>
+                <th>Категория</th>
+                <th>Приоритет</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th style="width: 50px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="t : ${tickets}">
+                <td th:text="${t.id}">1</td>
+                <td th:text="${t.title}">Название</td>
+                <td th:text="${t.category.name}">Категория</td>
+                <td th:text="${t.priority}">Приоритет</td>
+                <td th:text="${t.status}">Статус</td>
+                <td th:text="${#temporals.format(t.createdAt, 'dd-MM-yyyy')}">Дата</td>
+                <td style="text-align: center;">
+                    <a th:href="@{/tickets/{id}(id=${t.id})}" class="btn btn-gray" style="padding: 4px 8px;">👁</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:if="${tickets.isEmpty()}" class="card">
+        <p>У вас пока нет заявок. Создайте первую!</p>
+    </div>
+</div>
+</body>
+</html>

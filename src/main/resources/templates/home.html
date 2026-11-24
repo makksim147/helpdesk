@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelpDesk - Система обработки заявок</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="navbar" th:if="${#authorization.expression('!isAuthenticated()')}">
+    <div class="logo">HelpDesk</div>
+    <div class="nav-links">
+        <a th:href="@{/login}" class="btn btn-green" style="padding: 6px 16px;">Войти</a>
+        <a th:href="@{/register}" class="btn btn-blue" style="padding: 6px 16px;">Регистрация</a>
+    </div>
+</div>
+
+<div class="navbar" th:if="${#authorization.expression('isAuthenticated()')}">
+    <div class="logo">HelpDesk</div>
+    <div class="nav-links">
+        <a th:href="@{/tickets/my}">Мои заявки</a>
+        <span th:text="${#authentication.name}">User</span>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
+        </form>
+    </div>
+</div>
+
+<div class="landing-container">
+
+    <section class="hero-section">
+        <div>
+            <h1 class="hero-title">Ответ на любой ваш<br>запрос</h1>
+            <a th:href="@{/tickets/create}" class="btn btn-blue-main" style="padding: 12px 28px; font-size: 16px;">
+                Создать заявку
+            </a>
+        </div>
+        <div class="img-box">
+            <img th:src="@{/img/hero.png}" alt="" class="hero-img">
+        </div>
+    </section>
+
+    <section class="feature-row">
+        <div class="feature-text">
+            <h3>Помощь по любому вопросу<br>от наших специалистов</h3>
+            <div class="feature-card-box">
+                Наши специалисты смогут помочь вам с любым интересующим вас вопросом по нашему продукту.
+            </div>
+        </div>
+        <div class="img-box">
+            <img th:src="@{/img/chest.png}" alt="" class="feature-img">
+        </div>
+    </section>
+
+    <hr class="divider-short">
+
+    <section class="feature-row">
+        <div class="img-box">
+            <img th:src="@{/img/clock.png}" alt="" class="feature-img">
+        </div>
+        <div class="feature-text">
+            <h3>Быстрый отклик на заявку</h3>
+            <div class="feature-card-box">
+                Наши специалисты сразу займутся вашей заявкой, как только освободятся.
+            </div>
+        </div>
+    </section>
+
+    <hr class="divider-short">
+
+    <section class="feature-row">
+        <div class="feature-text">
+            <h3>Общение со специалистом</h3>
+            <div class="feature-card-box">
+                В заявке вы можете оставлять комментарии для удобного общения со специалистом.
+            </div>
+        </div>
+        <div class="img-box">
+            <img th:src="@{/img/chat.png}" alt="" class="feature-img">
+        </div>
+    </section>
+
+    <hr class="divider-full">
+
+    <section class="cta-bottom-section">
+        <h2>Создайте заявку,<br>чтобы получить на нее ответ как можно скорее</h2>
+        <a th:href="@{/tickets/create}" class="btn btn-blue-main" style="padding: 12px 28px; font-size: 16px;">
+            Создать заявку
+        </a>
+    </section>
+
+</div>
+
+<footer class="footer">
+    <div>HelpDesk</div>
+    <div>Все права защищены</div>
+</footer>
+
+</body>
+</html>

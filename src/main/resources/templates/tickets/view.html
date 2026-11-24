@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Заявка - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="navbar">
+    <div class="logo">HelpDesk</div>
+    <div class="nav-links">
+        <a th:href="@{/tickets/my}">Мои заявки</a>
+        <form th:action="@{/logout}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <a th:href="@{/tickets/my}" class="back-link">‹ Ко всем заявкам</a>
+    <h1 class="page-title" th:text="'Заявка №' + ${ticket.id}">Заявка №1</h1>
+
+    <div class="card details-list">
+        <div class="details-item">
+            <strong>Название</strong><span th:text="${ticket.title}"></span>
+        </div>
+        <div class="details-item">
+            <strong>Описание</strong><span th:text="${ticket.description}"></span>
+        </div>
+        <div class="details-item">
+            <strong>Категория</strong><span th:text="${ticket.category.name}"></span>
+        </div>
+        <div class="details-item">
+            <strong>Приоритет</strong><span th:text="${ticket.priority}"></span>
+        </div>
+        <div class="details-item">
+            <strong>Автор</strong><span th:text="${ticket.author.name}"></span>
+        </div>
+        <div class="details-item">
+            <strong>Статус</strong><span th:text="${ticket.status}"></span>
+        </div>
+        <div class="details-item">
+            <strong>Дата создания</strong>
+            <span th:text="${#temporals.format(ticket.createdAt, 'dd-MM-yyyy HH:mm')}"></span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
