@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="header" class="site-header">
+
+    <div class="container nav-inner">
+
+        <a th:href="@{/}" class="brand">
+            <span class="brand-mark">?</span>
+            <span>HelpDesk</span>
+        </a>
+
+        <nav class="nav-links">
+
+            <a th:href="@{/}">Главная</a>
+
+            <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+
+                <a th:if="${#authorization.expression('hasRole(''USER'')')}"
+                   th:href="@{/tickets/my}">
+                    Мои заявки
+                </a>
+
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+                   th:href="@{/admin/tickets}">
+                    Панель администратора
+                </a>
+
+                <a th:href="@{/profile}">
+                    Профиль
+                </a>
+
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit" class="button secondary">
+                        Выйти
+                    </button>
+                </form>
+
+            </th:block>
+
+            <th:block th:if="${#authorization.expression('!isAuthenticated()')}">
+
+                <a th:href="@{/login}">Войти</a>
+
+                <a th:href="@{/register}" class="button primary">
+                    Регистрация
+                </a>
+
+            </th:block>
+
+        </nav>
+
+    </div>
+
+</header>
+
+</body>
+</html>
