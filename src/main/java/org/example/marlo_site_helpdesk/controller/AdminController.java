@@ -2,42 +2,32 @@ package org.example.marlo_site_helpdesk.controller;
 
 import jakarta.validation.Valid;
 import org.example.marlo_site_helpdesk.models.*;
-import org.example.marlo_site_helpdesk.repository.TicketRepository;
 import org.example.marlo_site_helpdesk.dto.TicketUpdateDto;
-import org.springframework.http.HttpStatus;
+import org.example.marlo_site_helpdesk.dto.TicketFilterDto;
+import org.example.marlo_site_helpdesk.service.CommentService;
+import org.example.marlo_site_helpdesk.service.TicketService;
+import org.example.marlo_site_helpdesk.service.StatisticsService;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.example.marlo_site_helpdesk.service.CommentService;
-import org.springframework.security.core.Authentication;
-import org.example.marlo_site_helpdesk.dto.TicketFilterDto;
-import org.example.marlo_site_helpdesk.service.TicketService;
-import org.example.marlo_site_helpdesk.repository.CategoryRepository;
-import org.example.marlo_site_helpdesk.service.StatisticsService;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
-    private final TicketRepository ticketRepository;
     private final CommentService commentService;
     private final TicketService ticketService;
-    private final CategoryRepository categoryRepository;
     private final StatisticsService statisticsService;
 
     public AdminController(
-            TicketRepository ticketRepository,
             CommentService commentService,
             TicketService ticketService,
-            CategoryRepository categoryRepository,
             StatisticsService statisticsService) {
 
-        this.ticketRepository = ticketRepository;
         this.commentService = commentService;
         this.ticketService = ticketService;
-        this.categoryRepository = categoryRepository;
         this.statisticsService = statisticsService;
     }
 
@@ -58,7 +48,7 @@ public class AdminController {
 
         model.addAttribute(
                 "categories",
-                categoryRepository.findAll()
+                ticketService.getCategories()
         );
 
         model.addAttribute(
@@ -78,7 +68,7 @@ public class AdminController {
             Model model,
             Authentication auth) {
 
-        Ticket ticket = getTicket(id);
+        Ticket ticket = ticketService.getTicket(id);
 
         TicketUpdateDto dto = new TicketUpdateDto();
 
@@ -100,19 +90,16 @@ public class AdminController {
             Model model,
             Authentication auth) {
 
-        Ticket ticket = getTicket(id);
-
         if (bindingResult.hasErrors()) {
+
+            Ticket ticket = ticketService.getTicket(id);
 
             fillModel(model, ticket, auth);
 
             return "admin/view";
         }
 
-        ticket.setStatus(dto.getStatus());
-        ticket.setPriority(dto.getPriority());
-
-        ticketRepository.save(ticket);
+        ticketService.updateTicket(id, dto);
 
         return "redirect:/admin/tickets/" + id + "?success";
     }
@@ -120,29 +107,9 @@ public class AdminController {
     @PostMapping("/tickets/{id}/close")
     public String closeTicket(@PathVariable Long id) {
 
-        Ticket ticket = getTicket(id);
-
-        if (ticket.getStatus() != Status.DONE) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Закрыть можно только выполненную заявку"
-            );
-        }
-
-        ticket.setStatus(Status.CLOSED);
-
-        ticketRepository.save(ticket);
+        ticketService.closeTicket(id);
 
         return "redirect:/admin/tickets/" + id + "?success";
-    }
-
-    private Ticket getTicket(Long id) {
-
-        return ticketRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Заявка не найдена"
-                ));
     }
 
     private void fillModel(
