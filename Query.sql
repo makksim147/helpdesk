@@ -15,3 +15,4 @@ SELECT * FROM request;
 UPDATE users
 SET role = 'ADMIN'
 WHERE email = 'admin@gmail.com';
+

@@ -28,6 +28,107 @@
 
     <h1 class="page-title">Панель администратора</h1>
 
+    <div class="stats-section">
+
+        <h2>Статистика обращений</h2>
+
+        <div class="stats-grid">
+
+            <div class="stat-card stat-total">
+
+            <span class="stat-label">
+                Всего заявок
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.total}">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat-card stat-new">
+
+            <span class="stat-label">
+                Новые
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.newTickets}">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat-card stat-progress">
+
+            <span class="stat-label">
+                В работе
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.inProgress}">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat-card stat-done">
+
+            <span class="stat-label">
+                Выполненные
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.done}">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat-card stat-closed">
+
+            <span class="stat-label">
+                Закрытые
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.closed}">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat-card stat-high">
+
+            <span class="stat-label">
+                Высокий приоритет
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.high}">
+                    0
+                </strong>
+
+            </div>
+
+            <div class="stat-card stat-critical">
+
+            <span class="stat-label">
+                Критический приоритет
+            </span>
+
+                <strong class="stat-value"
+                        th:text="${statistics.critical}">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <div class="card" style="margin-bottom: 20px;">
 
         <h2>Управление заявками</h2>

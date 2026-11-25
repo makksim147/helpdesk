@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.example.marlo_site_helpdesk.dto.TicketFilterDto;
 import org.example.marlo_site_helpdesk.service.TicketService;
 import org.example.marlo_site_helpdesk.repository.CategoryRepository;
+import org.example.marlo_site_helpdesk.service.StatisticsService;
 
 @Controller
 @RequestMapping("/admin")
@@ -24,17 +25,20 @@ public class AdminController {
     private final CommentService commentService;
     private final TicketService ticketService;
     private final CategoryRepository categoryRepository;
+    private final StatisticsService statisticsService;
 
     public AdminController(
             TicketRepository ticketRepository,
             CommentService commentService,
             TicketService ticketService,
-            CategoryRepository categoryRepository) {
+            CategoryRepository categoryRepository,
+            StatisticsService statisticsService) {
 
         this.ticketRepository = ticketRepository;
         this.commentService = commentService;
         this.ticketService = ticketService;
         this.categoryRepository = categoryRepository;
+        this.statisticsService = statisticsService;
     }
 
     @GetMapping
@@ -55,6 +59,11 @@ public class AdminController {
         model.addAttribute(
                 "categories",
                 categoryRepository.findAll()
+        );
+
+        model.addAttribute(
+                "statistics",
+                statisticsService.getStatistics()
         );
 
         model.addAttribute("statuses", Status.values());
