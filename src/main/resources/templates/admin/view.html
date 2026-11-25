@@ -2,133 +2,169 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Управление заявкой - HelpDesk</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<div class="navbar">
+<div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="logo">HelpDesk | Администратор</div>
+<main class="container">
 
-    <div class="nav-links">
+    <a th:href="@{/admin/tickets}" class="back-link">
+        ← Все заявки
+    </a>
 
-        <a th:href="@{/admin/tickets}">Все заявки</a>
-        <a th:href="@{/profile}">Профиль</a>
+    <div class="page-heading heading-actions">
 
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-red">
-                Выйти
-            </button>
-        </form>
+        <div>
+            <h1 th:text="'Заявка №' + ${ticket.id}"></h1>
+            <p>Просмотр и управление обращением</p>
+        </div>
+
+        <span class="status-badge"
+              th:classappend="${'status-' + ticket.status.name()}"
+              th:text="${ticket.status.label}">
+        </span>
 
     </div>
 
-</div>
-
-<div class="container">
-
-    <h1 class="page-title"
-        th:text="'Заявка №' + ${ticket.id}">
-    </h1>
-
     <div class="success-message"
          th:if="${param.success}">
-        Изменения успешно сохранены
+        ✓ Изменения успешно сохранены
     </div>
 
     <div class="admin-ticket-grid">
 
-        <div>
+        <div class="admin-ticket-content">
 
-            <div class="card">
+            <section class="card">
 
-                <h2 th:text="${ticket.title}"></h2>
+                <h2 class="ticket-view-title"
+                    th:text="${ticket.title}">
+                </h2>
 
-                <ul class="info-list">
+                <div class="section-divider"></div>
 
-                    <li>
-                        <strong>Категория</strong>
-                        <span th:text="${ticket.category.name}"></span>
-                    </li>
-
-                    <li>
-                        <strong>Статус</strong>
-                        <span th:text="${ticket.status.label}"></span>
-                    </li>
-
-                    <li>
-                        <strong>Приоритет</strong>
-                        <span th:text="${ticket.priority.label}"></span>
-                    </li>
-
-                    <li>
-                        <strong>Дата создания</strong>
-                        <span th:text="${#temporals.format(
-                            ticket.createdAt, 'dd.MM.yyyy HH:mm')}">
-                        </span>
-                    </li>
-
-                    <li th:if="${ticket.updatedAt != null}">
-                        <strong>Последнее изменение</strong>
-                        <span th:text="${#temporals.format(
-                            ticket.updatedAt, 'dd.MM.yyyy HH:mm')}">
-                        </span>
-                    </li>
-
-                </ul>
-
-                <h3>Описание проблемы</h3>
+                <h3 class="description-title">
+                    Описание проблемы
+                </h3>
 
                 <p class="ticket-description"
                    th:text="${ticket.description}">
                 </p>
 
-            </div>
-
-            <div class="card">
-
-                <h2>Информация о пользователе</h2>
+                <div class="section-divider"></div>
 
                 <ul class="info-list">
 
                     <li>
-                        <strong>ID пользователя</strong>
-                        <span th:text="${ticket.author.id}"></span>
-                    </li>
 
-                    <li>
-                        <strong>Имя</strong>
-                        <span th:text="${ticket.author.name}"></span>
-                    </li>
+                        <strong>Категория</strong>
 
-                    <li>
-                        <strong>Электронная почта</strong>
-                        <span th:text="${ticket.author.email}"></span>
-                    </li>
-
-                    <li>
-                        <strong>Дата регистрации</strong>
-                        <span th:text="${#temporals.format(
-                            ticket.author.registeredAt, 'dd.MM.yyyy')}">
+                        <span th:text="${ticket.category.name}">
                         </span>
+
+                    </li>
+
+                    <li>
+
+                        <strong>Приоритет</strong>
+
+                        <span class="priority-badge"
+                              th:classappend="${'priority-' + ticket.priority.name()}"
+                              th:text="${ticket.priority.label}">
+                        </span>
+
+                    </li>
+
+                    <li>
+
+                        <strong>Дата создания</strong>
+
+                        <span th:text="${#temporals.format(ticket.createdAt, 'dd.MM.yyyy HH:mm')}">
+                        </span>
+
+                    </li>
+
+                    <li th:if="${ticket.updatedAt != null}">
+
+                        <strong>Последнее обновление</strong>
+
+                        <span th:text="${#temporals.format(ticket.updatedAt, 'dd.MM.yyyy HH:mm')}">
+                        </span>
+
                     </li>
 
                 </ul>
 
-            </div>
+            </section>
 
-            <div th:replace="~{fragments/comments :: commentsBlock(
-                @{/admin/tickets/{id}/comments(id=${ticket.id})})}">
+            <section class="card">
+
+                <h2 class="card-title">
+                    Информация об авторе
+                </h2>
+
+                <div class="section-divider"></div>
+
+                <div class="profile-summary">
+
+                    <div class="profile-avatar"
+                         th:text="${#strings.toUpperCase(#strings.substring(ticket.author.name, 0, 1))}">
+                    </div>
+
+                    <div>
+
+                        <h2 th:text="${ticket.author.name}"></h2>
+
+                        <p th:text="${ticket.author.email}"></p>
+
+                    </div>
+
+                </div>
+
+                <div class="section-divider"></div>
+
+                <ul class="info-list">
+
+                    <li>
+
+                        <strong>ID пользователя</strong>
+
+                        <span th:text="${ticket.author.id}">
+                        </span>
+
+                    </li>
+
+                    <li>
+
+                        <strong>Дата регистрации</strong>
+
+                        <span th:text="${#temporals.format(ticket.author.registeredAt, 'dd.MM.yyyy HH:mm')}">
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </section>
+
+            <div th:replace="~{fragments/comments :: commentsBlock(@{/admin/tickets/{id}/comments(id=${ticket.id})})}">
             </div>
 
         </div>
 
-        <div>
+        <aside class="admin-ticket-sidebar">
 
-            <div class="card">
+            <section class="card management-card">
 
-                <h2>Управление заявкой</h2>
+                <h2 class="card-title">
+                    Управление заявкой
+                </h2>
+
+                <div class="section-divider"></div>
 
                 <form th:action="@{/admin/tickets/{id}/update(id=${ticket.id})}"
                       th:object="${ticketForm}"
@@ -136,7 +172,7 @@
 
                     <div class="form-group">
 
-                        <label>Статус</label>
+                        <label for="status">Статус</label>
 
                         <select th:field="*{status}" required>
 
@@ -155,7 +191,7 @@
 
                     <div class="form-group">
 
-                        <label>Приоритет</label>
+                        <label for="priority">Приоритет</label>
 
                         <select th:field="*{priority}" required>
 
@@ -172,34 +208,62 @@
 
                     </div>
 
-                    <button type="submit" class="btn btn-green">
+                    <button type="submit"
+                            class="btn btn-blue-main full-width">
                         Сохранить изменения
                     </button>
 
                 </form>
 
-                <form th:if="${ticket.status.name() == 'DONE'}"
-                      th:action="@{/admin/tickets/{id}/close(id=${ticket.id})}"
-                      method="post"
-                      style="margin-top: 15px;">
+                <p class="form-hint">
+                    Изменения будут доступны пользователю
+                    после сохранения.
+                </p>
 
-                    <button type="submit" class="btn btn-red">
-                        Закрыть заявку
-                    </button>
+                <div th:if="${ticket.status.name() == 'DONE'}">
 
-                </form>
+                    <div class="section-divider"></div>
 
-            </div>
+                    <div class="close-ticket-hint">
 
-        </div>
+                        <span class="closed-check">✓</span>
+
+                        <p>
+                            Заявка выполнена и может быть закрыта.
+                        </p>
+
+                    </div>
+
+                    <form th:action="@{/admin/tickets/{id}/close(id=${ticket.id})}"
+                          method="post">
+
+                        <button type="submit"
+                                class="btn btn-green full-width">
+                            Закрыть заявку
+                        </button>
+
+                    </form>
+
+                </div>
+
+                <div class="closed-ticket-notice"
+                     th:if="${ticket.status.name() == 'CLOSED'}">
+
+                    <span class="closed-check">✓</span>
+
+                    <strong>Заявка закрыта</strong>
+
+                </div>
+
+            </section>
+
+        </aside>
 
     </div>
 
-    <a th:href="@{/admin/tickets}" class="btn btn-gray">
-        Назад к списку заявок
-    </a>
+</main>
 
-</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

@@ -2,127 +2,160 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Создание заявки - HelpDesk</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 
-<div class="navbar">
-  <div class="logo">HelpDesk</div>
+<div th:replace="~{fragments/header :: header}"></div>
 
-  <div class="nav-links">
+<main class="container">
 
-    <a th:href="@{/tickets/my}">Мои заявки</a>
-    <a th:href="@{/profile}">Профиль</a>
+  <a th:href="@{/tickets/my}" class="back-link">
+    ← Мои заявки
+  </a>
 
-    <form th:action="@{/logout}" method="post">
-      <button type="submit" class="btn btn-red">
-        Выйти
-      </button>
-    </form>
-
-  </div>
-</div>
-
-<div class="container">
-
-  <h1 class="page-title">Создание новой заявки</h1>
-
-  <div class="card" style="max-width: 600px;">
-
-    <form th:action="@{/tickets/create}"
-          th:object="${ticketForm}"
-          method="post">
-
-      <div class="form-group">
-
-        <label>Название</label>
-
-        <input type="text"
-               th:field="*{title}"
-               maxlength="200"
-               required>
-
-        <div class="field-error"
-             th:errors="*{title}"></div>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Описание</label>
-
-        <textarea th:field="*{description}"
-                  rows="5"
-                  maxlength="5000"
-                  required></textarea>
-
-        <div class="field-error"
-             th:errors="*{description}"></div>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Категория</label>
-
-        <select th:field="*{categoryId}" required>
-
-          <option value="">
-            -- Выберите категорию --
-          </option>
-
-          <option th:each="c : ${categories}"
-                  th:value="${c.id}"
-                  th:text="${c.name}">
-          </option>
-
-        </select>
-
-        <div class="field-error"
-             th:errors="*{categoryId}"></div>
-
-      </div>
-
-      <div class="form-group">
-
-        <label>Приоритет</label>
-
-        <select th:field="*{priority}" required>
-
-          <option value="">
-            -- Выберите приоритет --
-          </option>
-
-          <option th:each="p : ${priorities}"
-                  th:value="${p}"
-                  th:text="${p.label}">
-          </option>
-
-        </select>
-
-        <div class="field-error"
-             th:errors="*{priority}"></div>
-
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-
-        <button type="submit" class="btn btn-green">
-          Создать заявку
-        </button>
-
-        <a th:href="@{/tickets/my}" class="btn btn-red">
-          Отмена
-        </a>
-
-      </div>
-
-    </form>
-
+  <div class="page-heading">
+    <h1>Создание заявки</h1>
+    <p>Заполните информацию о вашем обращении</p>
   </div>
 
-</div>
+  <div class="create-ticket-grid">
+
+    <section class="card">
+
+      <h2 class="card-title">Информация о заявке</h2>
+
+      <div class="section-divider"></div>
+
+      <form th:action="@{/tickets/create}"
+            th:object="${ticketForm}"
+            method="post">
+
+        <div class="form-group">
+
+          <label for="title">Название</label>
+
+          <input type="text"
+                 th:field="*{title}"
+                 placeholder="Кратко опишите проблему"
+                 maxlength="200"
+                 required>
+
+          <div class="field-error"
+               th:errors="*{title}"></div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="description">Описание</label>
+
+          <textarea th:field="*{description}"
+                    placeholder="Подробно расскажите о проблеме..."
+                    rows="6"
+                    maxlength="5000"
+                    required></textarea>
+
+          <div class="field-error"
+               th:errors="*{description}"></div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="categoryId">Категория</label>
+
+          <select th:field="*{categoryId}" required>
+
+            <option value="">
+              Выберите категорию
+            </option>
+
+            <option th:each="c : ${categories}"
+                    th:value="${c.id}"
+                    th:text="${c.name}">
+            </option>
+
+          </select>
+
+          <div class="field-error"
+               th:errors="*{categoryId}"></div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="priority">Приоритет</label>
+
+          <select th:field="*{priority}" required>
+
+            <option value="">
+              Выберите приоритет
+            </option>
+
+            <option th:each="p : ${priorities}"
+                    th:value="${p}"
+                    th:text="${p.label}">
+            </option>
+
+          </select>
+
+          <div class="field-error"
+               th:errors="*{priority}"></div>
+
+        </div>
+
+        <div class="form-actions">
+
+          <button type="submit"
+                  class="btn btn-blue-main">
+            Создать заявку
+          </button>
+
+          <a th:href="@{/tickets/my}"
+             class="btn btn-gray">
+            Отмена
+          </a>
+
+        </div>
+
+      </form>
+
+    </section>
+
+    <aside class="card recommendations">
+
+      <h2 class="card-title">Рекомендации</h2>
+
+      <div class="section-divider"></div>
+
+      <ul class="check-list">
+
+        <li>Укажите понятное название заявки.</li>
+
+        <li>Подробно опишите возникшую проблему.</li>
+
+        <li>Выберите подходящую категорию.</li>
+
+        <li>Укажите реальный приоритет обращения.</li>
+
+      </ul>
+
+      <div class="form-hint">
+        После создания заявки вы сможете
+        отслеживать ее статус и общаться
+        со специалистом.
+      </div>
+
+    </aside>
+
+  </div>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

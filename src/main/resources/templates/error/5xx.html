@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка сервера - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container error-page">
+
+    <section class="card error-card">
+
+        <div class="error-code" th:text="${status}">500</div>
+
+        <h1>Ошибка сервера</h1>
+
+        <p>
+            При обработке запроса произошла ошибка.
+            Попробуйте повторить действие позже.
+        </p>
+
+        <div class="error-actions">
+
+            <a th:href="@{/}" class="btn btn-blue-main">
+                На главную
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
