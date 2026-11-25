@@ -1,7 +1,6 @@
 package org.example.marlo_site_helpdesk.service;
 
 import jakarta.persistence.criteria.Predicate;
-import org.example.marlo_site_helpdesk.models.Ticket;
 import org.example.marlo_site_helpdesk.repository.TicketRepository;
 import org.example.marlo_site_helpdesk.dto.TicketFilterDto;
 import org.springframework.data.domain.Sort;
