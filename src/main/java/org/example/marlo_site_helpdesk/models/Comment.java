@@ -1,4 +1,4 @@
-package org.example.marlo_site_helpdesk.Models;
+package org.example.marlo_site_helpdesk.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

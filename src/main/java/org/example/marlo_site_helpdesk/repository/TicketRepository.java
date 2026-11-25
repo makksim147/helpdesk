@@ -1,6 +1,6 @@
-package org.example.marlo_site_helpdesk.Repository;
+package org.example.marlo_site_helpdesk.repository;
 
-import org.example.marlo_site_helpdesk.Models.Ticket;
+import org.example.marlo_site_helpdesk.models.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

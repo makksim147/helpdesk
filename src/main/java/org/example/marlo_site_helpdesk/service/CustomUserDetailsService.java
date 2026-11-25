@@ -1,7 +1,7 @@
 package org.example.marlo_site_helpdesk.service;
 
-import org.example.marlo_site_helpdesk.Models.User;
-import org.example.marlo_site_helpdesk.Repository.UserRepository;
+import org.example.marlo_site_helpdesk.models.User;
+import org.example.marlo_site_helpdesk.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

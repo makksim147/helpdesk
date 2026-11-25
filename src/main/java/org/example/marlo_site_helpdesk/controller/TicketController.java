@@ -1,7 +1,7 @@
-package org.example.marlo_site_helpdesk.Controller;
+package org.example.marlo_site_helpdesk.controller;
 
-import org.example.marlo_site_helpdesk.Models.*;
-import org.example.marlo_site_helpdesk.Repository.*;
+import org.example.marlo_site_helpdesk.models.*;
+import org.example.marlo_site_helpdesk.repository.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

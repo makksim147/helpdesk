@@ -1,4 +1,4 @@
-package org.example.marlo_site_helpdesk.Controller;
+package org.example.marlo_site_helpdesk.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
