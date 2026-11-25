@@ -47,7 +47,23 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/tickets/my", true)
+                        .successHandler((request, response, authentication) -> {
+
+                            boolean isAdmin = authentication.getAuthorities()
+                                    .stream()
+                                    .anyMatch(authority ->
+                                            authority.getAuthority().equals("ROLE_ADMIN"));
+
+                            if (isAdmin) {
+                                response.sendRedirect(
+                                        request.getContextPath() + "/admin/tickets"
+                                );
+                            } else {
+                                response.sendRedirect(
+                                        request.getContextPath() + "/tickets/my"
+                                );
+                            }
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout

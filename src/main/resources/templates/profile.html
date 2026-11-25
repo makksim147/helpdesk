@@ -11,7 +11,15 @@
     <div class="logo">HelpDesk</div>
 
     <div class="nav-links">
-        <a th:href="@{/tickets/my}">Мои заявки</a>
+        <a th:if="${user.role.name() == 'USER'}"
+           th:href="@{/tickets/my}">
+            Мои заявки
+        </a>
+
+        <a th:if="${user.role.name() == 'ADMIN'}"
+           th:href="@{/admin/tickets}">
+            Панель администратора
+        </a>
         <a th:href="@{/profile}">Профиль</a>
 
         <form th:action="@{/logout}" method="post">

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель администратора - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">HelpDesk | Администратор</div>
+
+    <div class="nav-links">
+
+        <a th:href="@{/admin/tickets}">Все заявки</a>
+        <a th:href="@{/profile}">Профиль</a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-red">
+                Выйти
+            </button>
+        </form>
+
+    </div>
+</div>
+
+<div class="container">
+
+    <h1 class="page-title">Панель администратора</h1>
+
+    <div class="card" style="margin-bottom: 20px;">
+
+        <h2>Управление заявками</h2>
+
+        <p>
+            Всего обращений:
+            <strong th:text="${tickets.size()}">0</strong>
+        </p>
+
+    </div>
+
+    <div class="table-wrapper"
+         th:if="${!tickets.isEmpty()}">
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Категория</th>
+                <th>Приоритет</th>
+                <th>Статус</th>
+                <th>Дата</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="t : ${tickets}">
+
+                <td th:text="${t.id}"></td>
+
+                <td th:text="${t.title}"></td>
+
+                <td th:text="${t.author.name}"></td>
+
+                <td th:text="${t.category.name}"></td>
+
+                <td th:text="${t.priority.label}"></td>
+
+                <td th:text="${t.status.label}"></td>
+
+                <td th:text="${#temporals.format(
+                    t.createdAt, 'dd.MM.yyyy HH:mm')}">
+                </td>
+
+                <td>
+                    <a th:href="@{/admin/tickets/{id}(id=${t.id})}"
+                       class="btn btn-gray">
+                        Открыть
+                    </a>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="card" th:if="${tickets.isEmpty()}">
+        <p>Поступивших заявок пока нет.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
