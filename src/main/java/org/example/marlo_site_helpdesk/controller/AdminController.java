@@ -1,13 +1,14 @@
 package org.example.marlo_site_helpdesk.controller;
 
 import jakarta.validation.Valid;
+import org.example.marlo_site_helpdesk.config.CustomUserDetails;
 import org.example.marlo_site_helpdesk.models.*;
 import org.example.marlo_site_helpdesk.dto.TicketUpdateDto;
 import org.example.marlo_site_helpdesk.dto.TicketFilterDto;
 import org.example.marlo_site_helpdesk.service.CommentService;
 import org.example.marlo_site_helpdesk.service.TicketService;
 import org.example.marlo_site_helpdesk.service.StatisticsService;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,7 +67,7 @@ public class AdminController {
     public String viewTicket(
             @PathVariable Long id,
             Model model,
-            Authentication auth) {
+            @AuthenticationPrincipal CustomUserDetails principal) {
 
         Ticket ticket = ticketService.getTicket(id);
 
@@ -77,7 +78,7 @@ public class AdminController {
 
         model.addAttribute("ticketForm", dto);
 
-        fillModel(model, ticket, auth);
+        fillModel(model, ticket, principal);
 
         return "admin/view";
     }
@@ -88,13 +89,13 @@ public class AdminController {
             @Valid @ModelAttribute("ticketForm") TicketUpdateDto dto,
             BindingResult bindingResult,
             Model model,
-            Authentication auth) {
+            @AuthenticationPrincipal CustomUserDetails principal) {
 
         if (bindingResult.hasErrors()) {
 
             Ticket ticket = ticketService.getTicket(id);
 
-            fillModel(model, ticket, auth);
+            fillModel(model, ticket, principal);
 
             return "admin/view";
         }
@@ -115,7 +116,7 @@ public class AdminController {
     private void fillModel(
             Model model,
             Ticket ticket,
-            Authentication auth) {
+            CustomUserDetails principal) {
 
         model.addAttribute("ticket", ticket);
         model.addAttribute("statuses", Status.values());
@@ -125,7 +126,7 @@ public class AdminController {
                 "comments",
                 commentService.getComments(
                         ticket.getId(),
-                        auth.getName()
+                        principal.getId()
                 )
         );
     }

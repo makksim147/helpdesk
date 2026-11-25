@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.example.marlo_site_helpdesk.models.*;
 import org.example.marlo_site_helpdesk.repository.CategoryRepository;
-import org.example.marlo_site_helpdesk.repository.UserRepository;
 import org.example.marlo_site_helpdesk.dto.TicketCreateDto;
 import org.example.marlo_site_helpdesk.dto.TicketUpdateDto;
 import org.springframework.http.HttpStatus;
@@ -25,16 +24,16 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
     private final CategoryRepository categoryRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public TicketService(
             TicketRepository ticketRepository,
             CategoryRepository categoryRepository,
-            UserRepository userRepository) {
+            UserService userService) {
 
         this.ticketRepository = ticketRepository;
         this.categoryRepository = categoryRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Transactional(readOnly = true)
@@ -133,17 +132,19 @@ public class TicketService {
     }
 
     @Transactional(readOnly = true)
-    public List<Ticket> getMyTickets(String email) {
+    public List<Ticket> getMyTickets(Long userId) {
+
+        userService.getUser(userId);
 
         return ticketRepository
-                .findByAuthorEmailOrderByCreatedAtDesc(email);
+                .findByAuthorIdOrderByCreatedAtDesc(userId);
     }
 
     @Transactional(readOnly = true)
-    public Ticket getOwnTicket(Long id, String email) {
+    public Ticket getOwnTicket(Long id, Long userId) {
 
         return ticketRepository
-                .findByIdAndAuthorEmail(id, email)
+                .findByIdAndAuthorId(id, userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         "Заявка не найдена"
@@ -168,7 +169,7 @@ public class TicketService {
     @Transactional
     public CreateResult createTicket(
             TicketCreateDto dto,
-            String email) {
+            Long userId) {
 
         Optional<Category> category =
                 categoryRepository.findById(dto.getCategoryId());
@@ -177,10 +178,7 @@ public class TicketService {
             return CreateResult.CATEGORY_NOT_FOUND;
         }
 
-        User author = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED
-                ));
+        User author = userService.getUser(userId);
 
         Ticket ticket = new Ticket();
 
@@ -224,5 +222,14 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
+    @Transactional(readOnly = true)
+    public Ticket getAvailableTicket(Long id, User user) {
+
+        if (user.getRole() == Role.ADMIN) {
+            return getTicket(id);
+        }
+
+        return getOwnTicket(id, user.getId());
+    }
     
 }

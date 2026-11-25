@@ -13,9 +13,9 @@ public interface TicketRepository extends
         JpaRepository<Ticket, Long>,
         JpaSpecificationExecutor<Ticket> {
 
-    List<Ticket> findByAuthorEmailOrderByCreatedAtDesc(String email);
+    List<Ticket> findByAuthorIdOrderByCreatedAtDesc(Long authorId);
 
-    Optional<Ticket> findByIdAndAuthorEmail(Long id, String email);
+    Optional<Ticket> findByIdAndAuthorId(Long id, Long authorId);
 
     @Query("""
             SELECT new org.example.marlo_site_helpdesk.dto.TicketStatsDto(

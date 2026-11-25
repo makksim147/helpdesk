@@ -3,40 +3,46 @@ package org.example.marlo_site_helpdesk.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.example.marlo_site_helpdesk.models.User;
-import org.example.marlo_site_helpdesk.repository.UserRepository;
+import org.example.marlo_site_helpdesk.config.CustomUserDetails;
 import org.example.marlo_site_helpdesk.dto.ProfileDto;
+import org.example.marlo_site_helpdesk.models.User;
+import org.example.marlo_site_helpdesk.service.ProfileService;
+import org.example.marlo_site_helpdesk.service.UserService;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
 
-    private final UserRepository userRepository;
+    private final ProfileService profileService;
+    private final UserService userService;
 
-    public ProfileController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public ProfileController(
+            ProfileService profileService,
+            UserService userService) {
+
+        this.profileService = profileService;
+        this.userService = userService;
     }
 
     @GetMapping
-    public String profile(Authentication auth, Model model) {
+    public String profile(
+            @AuthenticationPrincipal CustomUserDetails principal,
+            Model model) {
 
-        User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow();
+        User user = userService.getUser(principal.getId());
 
-        ProfileDto dto = new ProfileDto();
+        model.addAttribute(
+                "profile",
+                profileService.getProfile(user)
+        );
 
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-
-        model.addAttribute("profile", dto);
         model.addAttribute("user", user);
 
         return "profile";
@@ -46,25 +52,28 @@ public class ProfileController {
     public String updateProfile(
             @Valid @ModelAttribute("profile") ProfileDto dto,
             BindingResult bindingResult,
+            @AuthenticationPrincipal CustomUserDetails principal,
             Authentication auth,
             Model model,
             HttpServletRequest request,
             HttpServletResponse response) {
 
-        User user = userRepository.findByEmail(auth.getName())
-                .orElseThrow();
-
-        model.addAttribute("user", user);
+        Long userId = principal.getId();
 
         if (bindingResult.hasErrors()) {
+
+            model.addAttribute(
+                    "user",
+                    userService.getUser(userId)
+            );
+
             return "profile";
         }
 
-        Optional<User> existingUser =
-                userRepository.findByEmail(dto.getEmail());
+        ProfileService.UpdateResult result =
+                profileService.updateProfile(userId, dto);
 
-        if (existingUser.isPresent()
-                && !existingUser.get().getId().equals(user.getId())) {
+        if (result == ProfileService.UpdateResult.EMAIL_EXISTS) {
 
             bindingResult.rejectValue(
                     "email",
@@ -72,18 +81,15 @@ public class ProfileController {
                     "Эта почта уже используется"
             );
 
+            model.addAttribute(
+                    "user",
+                    userService.getUser(userId)
+            );
+
             return "profile";
         }
 
-        boolean emailChanged =
-                !user.getEmail().equals(dto.getEmail());
-
-        user.setName(dto.getName().trim());
-        user.setEmail(dto.getEmail());
-
-        userRepository.save(user);
-
-        if (emailChanged) {
+        if (result == ProfileService.UpdateResult.EMAIL_CHANGED) {
 
             new SecurityContextLogoutHandler()
                     .logout(request, response, auth);

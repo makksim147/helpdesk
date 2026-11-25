@@ -1,7 +1,7 @@
 package org.example.marlo_site_helpdesk.service;
 
 import org.example.marlo_site_helpdesk.models.*;
-import org.example.marlo_site_helpdesk.repository.*;
+import org.example.marlo_site_helpdesk.repository.CommentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,36 +13,43 @@ import java.util.List;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final TicketRepository ticketRepository;
-    private final UserRepository userRepository;
+    private final TicketService ticketService;
+    private final UserService userService;
 
     public CommentService(
             CommentRepository commentRepository,
-            TicketRepository ticketRepository,
-            UserRepository userRepository) {
+            TicketService ticketService,
+            UserService userService) {
 
         this.commentRepository = commentRepository;
-        this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
+        this.ticketService = ticketService;
+        this.userService = userService;
     }
 
     @Transactional(readOnly = true)
-    public List<Comment> getComments(Long ticketId, String email) {
+    public List<Comment> getComments(Long ticketId, Long userId) {
 
-        User user = getUser(email);
+        User user = userService.getUser(userId);
 
-        Ticket ticket = getAvailableTicket(ticketId, user);
+        Ticket ticket =
+                ticketService.getAvailableTicket(ticketId, user);
 
         return commentRepository
-                .findByTicketIdOrderByCreatedAtAscIdAsc(ticket.getId());
+                .findByTicketIdOrderByCreatedAtAscIdAsc(
+                        ticket.getId()
+                );
     }
 
     @Transactional
-    public void addComment(Long ticketId, String email, String text) {
+    public void addComment(
+            Long ticketId,
+            Long userId,
+            String text) {
 
-        User author = getUser(email);
+        User author = userService.getUser(userId);
 
-        Ticket ticket = getAvailableTicket(ticketId, author);
+        Ticket ticket =
+                ticketService.getAvailableTicket(ticketId, author);
 
         if (ticket.getStatus() == Status.CLOSED) {
             throw new ResponseStatusException(
@@ -65,32 +72,5 @@ public class CommentService {
         comment.setText(text.trim());
 
         commentRepository.save(comment);
-    }
-
-    private User getUser(String email) {
-
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED
-                ));
-    }
-
-    private Ticket getAvailableTicket(Long ticketId, User user) {
-
-        if (user.getRole() == Role.ADMIN) {
-
-            return ticketRepository.findById(ticketId)
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Заявка не найдена"
-                    ));
-        }
-
-        return ticketRepository
-                .findByIdAndAuthorEmail(ticketId, user.getEmail())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Заявка не найдена"
-                ));
     }
 }

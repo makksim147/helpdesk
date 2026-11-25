@@ -6,7 +6,8 @@ import org.example.marlo_site_helpdesk.models.Ticket;
 import org.example.marlo_site_helpdesk.dto.TicketCreateDto;
 import org.example.marlo_site_helpdesk.service.CommentService;
 import org.example.marlo_site_helpdesk.service.TicketService;
-import org.springframework.security.core.Authentication;
+import org.example.marlo_site_helpdesk.config.CustomUserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,14 +29,14 @@ public class TicketController {
     }
 
     @GetMapping("/my")
-    public String myTickets(Authentication auth, Model model) {
+    public String myTickets(
+            @AuthenticationPrincipal CustomUserDetails principal,
+            Model model) {
 
         model.addAttribute(
                 "tickets",
-                ticketService.getMyTickets(auth.getName())
+                ticketService.getMyTickets(principal.getId())
         );
-
-        model.addAttribute("username", auth.getName());
 
         return "tickets/my";
     }
@@ -54,7 +55,7 @@ public class TicketController {
     public String create(
             @Valid @ModelAttribute("ticketForm") TicketCreateDto dto,
             BindingResult bindingResult,
-            Authentication auth,
+            @AuthenticationPrincipal CustomUserDetails principal,
             Model model) {
 
         if (bindingResult.hasErrors()) {
@@ -65,7 +66,7 @@ public class TicketController {
         }
 
         TicketService.CreateResult result =
-                ticketService.createTicket(dto, auth.getName());
+                ticketService.createTicket(dto, principal.getId());
 
         if (result == TicketService.CreateResult.CATEGORY_NOT_FOUND) {
 
@@ -87,19 +88,18 @@ public class TicketController {
     public String viewTicket(
             @PathVariable Long id,
             Model model,
-            Authentication auth) {
+            @AuthenticationPrincipal CustomUserDetails principal) {
 
         Ticket ticket = ticketService.getOwnTicket(
                 id,
-                auth.getName()
+                principal.getId()
         );
 
         model.addAttribute("ticket", ticket);
-        model.addAttribute("username", auth.getName());
 
         model.addAttribute(
                 "comments",
-                commentService.getComments(id, auth.getName())
+                commentService.getComments(id, principal.getId())
         );
 
         return "tickets/view";
