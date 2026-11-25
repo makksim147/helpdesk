@@ -2,43 +2,40 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль - HelpDesk</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
 
-<div class="navbar">
-    <div class="logo">HelpDesk</div>
+<div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="nav-links">
-        <a th:if="${user.role.name() == 'USER'}"
-           th:href="@{/tickets/my}">
-            Мои заявки
-        </a>
+<main class="container">
 
-        <a th:if="${user.role.name() == 'ADMIN'}"
-           th:href="@{/admin/tickets}">
-            Панель администратора
-        </a>
-        <a th:href="@{/profile}">Профиль</a>
-
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-red">
-                Выйти
-            </button>
-        </form>
+    <div class="page-heading">
+        <h1>Мой профиль</h1>
+        <p>Просмотр и изменение личных данных</p>
     </div>
-</div>
 
-<div class="container">
+    <div class="profile-grid">
 
-    <h1 class="page-title">Мой профиль</h1>
+        <section class="card">
 
-    <div class="card profile-card">
+            <div class="profile-summary">
 
-        <div class="profile-info">
+                <div class="profile-avatar"
+                     th:text="${#strings.toUpperCase(#strings.substring(user.name, 0, 1))}">
+                    U
+                </div>
 
-            <h2>Информация об аккаунте</h2>
+                <div>
+                    <h2 th:text="${user.name}"></h2>
+                    <p>Личный аккаунт</p>
+                </div>
+
+            </div>
+
+            <div class="section-divider"></div>
 
             <ul class="info-list">
 
@@ -61,23 +58,24 @@
 
                 <li>
                     <strong>Дата регистрации</strong>
-                    <span th:text="${#temporals.format(
-                        user.registeredAt, 'dd.MM.yyyy')}">
+                    <span th:text="${#temporals.format(user.registeredAt, 'dd.MM.yyyy')}">
                     </span>
                 </li>
 
             </ul>
 
-        </div>
+        </section>
 
-        <div class="profile-info">
+        <section class="card">
 
-            <h2>Редактирование профиля</h2>
+            <h2 class="card-title">Редактирование профиля</h2>
 
-            <p class="success-message"
-               th:if="${param.success}">
-                Данные успешно сохранены
-            </p>
+            <div class="section-divider"></div>
+
+            <div class="success-message"
+                 th:if="${param.success}">
+                ✓ Данные успешно сохранены
+            </div>
 
             <form th:action="@{/profile}"
                   th:object="${profile}"
@@ -85,10 +83,11 @@
 
                 <div class="form-group">
 
-                    <label>Имя</label>
+                    <label for="name">Имя</label>
 
                     <input type="text"
                            th:field="*{name}"
+                           maxlength="100"
                            required>
 
                     <div class="field-error"
@@ -98,10 +97,11 @@
 
                 <div class="form-group">
 
-                    <label>Электронная почта</label>
+                    <label for="email">Электронная почта</label>
 
                     <input type="email"
                            th:field="*{email}"
+                           maxlength="254"
                            required>
 
                     <div class="field-error"
@@ -109,22 +109,25 @@
 
                 </div>
 
-                <p class="profile-hint">
+                <p class="form-hint">
                     При изменении почты потребуется
                     повторная авторизация.
                 </p>
 
-                <button type="submit" class="btn btn-green">
+                <button type="submit"
+                        class="btn btn-blue-main">
                     Сохранить изменения
                 </button>
 
             </form>
 
-        </div>
+        </section>
 
     </div>
 
-</div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

@@ -2,62 +2,131 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Мои заявки - HelpDesk</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<div class="navbar">
-    <div class="logo">HelpDesk</div>
-    <div class="nav-links">
-        <a th:href="@{/tickets/my}">Мои заявки</a>
-        <a th:href="@{/profile}"
-           th:text="${username}">
-            Профиль
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container">
+
+    <div class="page-heading heading-actions">
+
+        <div>
+            <h1>Мои заявки</h1>
+            <p>История ваших обращений в поддержку</p>
+        </div>
+
+        <a th:href="@{/tickets/create}"
+           class="btn btn-blue-main">
+            + Создать заявку
         </a>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
-        </form>
-    </div>
-</div>
-<div class="container">
-    <h1 class="page-title">Мои заявки</h1>
 
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
-        <a th:href="@{/tickets/create}" class="btn btn-green">Создать новую заявку</a>
     </div>
 
-    <div class="table-wrapper" th:if="${!tickets.isEmpty()}">
-        <table>
-            <thead>
-            <tr>
-                <th>№</th>
-                <th>Название</th>
-                <th>Категория</th>
-                <th>Приоритет</th>
-                <th>Статус</th>
-                <th>Дата</th>
-                <th style="width: 50px;"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="t : ${tickets}">
-                <td th:text="${t.id}">1</td>
-                <td th:text="${t.title}">Название</td>
-                <td th:text="${t.category.name}">Категория</td>
-                <td th:text="${t.priority}">Приоритет</td>
-                <td th:text="${t.status}">Статус</td>
-                <td th:text="${#temporals.format(t.createdAt, 'dd-MM-yyyy')}">Дата</td>
-                <td style="text-align: center;">
-                    <a th:href="@{/tickets/{id}(id=${t.id})}" class="btn btn-gray" style="padding: 4px 8px;">👁</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+    <section class="card tickets-card">
 
-    <div th:if="${tickets.isEmpty()}" class="card">
-        <p>У вас пока нет заявок. Создайте первую!</p>
-    </div>
-</div>
+        <div class="table-heading">
+
+            <h2>Все обращения</h2>
+
+            <span class="ticket-count"
+                  th:text="${tickets.size()}">
+                0
+            </span>
+
+        </div>
+
+        <div class="table-wrapper"
+             th:if="${!tickets.isEmpty()}">
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Категория</th>
+                    <th>Приоритет</th>
+                    <th>Статус</th>
+                    <th>Дата создания</th>
+                    <th></th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="t : ${tickets}">
+
+                    <td class="ticket-id"
+                        th:text="'#' + ${t.id}">
+                    </td>
+
+                    <td class="ticket-title"
+                        th:text="${t.title}">
+                    </td>
+
+                    <td th:text="${t.category.name}"></td>
+
+                    <td>
+                        <span class="priority-badge"
+                              th:classappend="${'priority-' + t.priority.name()}"
+                              th:text="${t.priority.label}">
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${'status-' + t.status.name()}"
+                              th:text="${t.status.label}">
+                        </span>
+                    </td>
+
+                    <td class="ticket-date"
+                        th:text="${#temporals.format(t.createdAt, 'dd.MM.yyyy')}">
+                    </td>
+
+                    <td>
+                        <a th:href="@{/tickets/{id}(id=${t.id})}"
+                           class="table-link">
+                            Открыть →
+                        </a>
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="empty-state"
+             th:if="${tickets.isEmpty()}">
+
+            <div class="empty-icon">✓</div>
+
+            <h3>У вас пока нет заявок</h3>
+
+            <p>
+                Создайте первое обращение,
+                если вам необходима помощь.
+            </p>
+
+            <a th:href="@{/tickets/create}"
+               class="btn btn-blue-main">
+                Создать заявку
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
 </html>

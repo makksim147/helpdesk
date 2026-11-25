@@ -2,64 +2,95 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<div th:fragment="commentsBlock(actionUrl)"
-     class="card comments-card">
+<section th:fragment="commentsBlock(actionUrl)"
+         class="card comments-card">
 
-    <h2>История переписки</h2>
+    <div class="comments-heading">
 
-    <p class="comments-empty"
-       th:if="${comments.isEmpty()}">
-        Комментариев пока нет.
-    </p>
+        <h2 class="card-title">
+            Переписка по заявке
+        </h2>
 
-    <div class="comments-list">
-
-        <div th:each="c : ${comments}"
-             class="comment"
-             th:classappend="${c.author.role.name() == 'ADMIN'
-                ? 'comment-admin' : 'comment-user'}">
-
-            <div class="comment-header">
-
-                <div>
-
-                    <strong th:text="${c.author.name}"></strong>
-
-                    <span class="comment-role"
-                          th:text="${c.author.role.name() == 'ADMIN'
-                            ? 'Поддержка' : 'Пользователь'}">
-                    </span>
-
-                </div>
-
-                <span class="comment-date"
-                      th:text="${#temporals.format(
-                        c.createdAt, 'dd.MM.yyyy HH:mm')}">
-                </span>
-
-            </div>
-
-            <div class="comment-text"
-                 th:text="${c.text}">
-            </div>
-
-        </div>
+        <span class="ticket-count"
+              th:text="${comments.size()}">
+        </span>
 
     </div>
 
-    <form th:if="${ticket.status.name() != 'CLOSED'}"
+    <div class="section-divider"></div>
+
+    <div class="comments-empty-state"
+         th:if="${comments.isEmpty()}">
+
+        <div class="comments-empty-icon">☏</div>
+
+        <h3>Пока нет комментариев</h3>
+
+        <p>Здесь будет отображаться переписка по заявке.</p>
+
+    </div>
+
+    <div class="comments-list"
+         th:unless="${comments.isEmpty()}">
+
+        <article th:each="c : ${comments}"
+                 class="comment"
+                 th:classappend="${c.author.role.name() == 'ADMIN'
+                    ? 'comment-admin' : 'comment-user'}">
+
+            <div class="comment-header">
+
+                <div class="comment-author">
+
+                    <div class="comment-avatar"
+                         th:text="${#strings.toUpperCase(#strings.substring(c.author.name, 0, 1))}">
+                    </div>
+
+                    <div class="comment-author-info">
+
+                        <strong th:text="${c.author.name}"></strong>
+
+                        <span class="comment-role"
+                              th:text="${c.author.role.name() == 'ADMIN'
+                                ? 'Специалист поддержки' : 'Пользователь'}">
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <time class="comment-date"
+                      th:text="${#temporals.format(c.createdAt, 'dd.MM.yyyy HH:mm')}">
+                </time>
+
+            </div>
+
+            <p class="comment-text"
+               th:text="${c.text}">
+            </p>
+
+        </article>
+
+    </div>
+
+    <form class="comment-form"
+          th:if="${ticket.status.name() != 'CLOSED'}"
           th:action="${actionUrl}"
-          method="post"
-          class="comment-form">
+          method="post">
+
+        <div class="section-divider"></div>
 
         <div class="form-group">
 
-            <label>Ваше сообщение</label>
+            <label for="commentText">
+                Ваш комментарий
+            </label>
 
-            <textarea name="text"
+            <textarea id="commentText"
+                      name="text"
                       rows="4"
                       maxlength="3000"
-                      placeholder="Введите сообщение..."
+                      placeholder="Напишите комментарий..."
                       required></textarea>
 
             <div class="field-error"
@@ -69,20 +100,34 @@
 
         </div>
 
-        <button type="submit" class="btn btn-green">
-            Отправить сообщение
-        </button>
+        <div class="comment-actions">
+
+            <span class="comment-limit">
+                Максимум 3000 символов
+            </span>
+
+            <button type="submit"
+                    class="btn btn-blue-main">
+                Отправить комментарий
+            </button>
+
+        </div>
 
     </form>
 
     <div class="comments-closed"
          th:if="${ticket.status.name() == 'CLOSED'}">
 
-        Заявка закрыта. Отправка сообщений недоступна.
+        <span class="closed-check">✓</span>
+
+        <div>
+            <strong>Заявка закрыта</strong>
+            <p>Добавление новых комментариев недоступно.</p>
+        </div>
 
     </div>
 
-</div>
+</section>
 
 </body>
 </html>

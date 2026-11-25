@@ -3,99 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HelpDesk - Система обработки заявок</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
 
-<div class="navbar" th:if="${#authorization.expression('!isAuthenticated()')}">
-    <div class="logo">HelpDesk</div>
-    <div class="nav-links">
-        <a th:href="@{/login}" class="btn btn-green" style="padding: 6px 16px;">Войти</a>
-        <a th:href="@{/register}" class="btn btn-blue" style="padding: 6px 16px;">Регистрация</a>
-    </div>
-</div>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<div class="navbar" th:if="${#authorization.expression('isAuthenticated()')}">
-    <div class="logo">HelpDesk</div>
-    <div class="nav-links">
-        <a th:href="@{/tickets/my}">Мои заявки</a>
-        <span th:text="${#authentication.name}">User</span>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
-        </form>
-    </div>
-</div>
-
-<div class="landing-container">
+<main class="landing-container">
 
     <section class="hero-section">
-        <div>
-            <h1 class="hero-title">Ответ на любой ваш<br>запрос</h1>
-            <a th:href="@{/tickets/create}" class="btn btn-blue-main" style="padding: 12px 28px; font-size: 16px;">
-                Создать заявку
-            </a>
-        </div>
-        <div class="img-box">
-            <img th:src="@{/img/hero.png}" alt="" class="hero-img">
-        </div>
-    </section>
 
-    <section class="feature-row">
-        <div class="feature-text">
-            <h3>Помощь по любому вопросу<br>от наших специалистов</h3>
-            <div class="feature-card-box">
-                Наши специалисты смогут помочь вам с любым интересующим вас вопросом по нашему продукту.
-            </div>
-        </div>
-        <div class="img-box">
-            <img th:src="@{/img/chest.png}" alt="" class="feature-img">
-        </div>
-    </section>
+        <h1 class="hero-title">
+            Ответ на любой ваш запрос
+        </h1>
 
-    <hr class="divider-short">
+        <p class="hero-description">
+            Создавайте обращения, отслеживайте их статус
+            и получайте помощь от наших специалистов.
+        </p>
 
-    <section class="feature-row">
-        <div class="img-box">
-            <img th:src="@{/img/clock.png}" alt="" class="feature-img">
-        </div>
-        <div class="feature-text">
-            <h3>Быстрый отклик на заявку</h3>
-            <div class="feature-card-box">
-                Наши специалисты сразу займутся вашей заявкой, как только освободятся.
-            </div>
-        </div>
-    </section>
-
-    <hr class="divider-short">
-
-    <section class="feature-row">
-        <div class="feature-text">
-            <h3>Общение со специалистом</h3>
-            <div class="feature-card-box">
-                В заявке вы можете оставлять комментарии для удобного общения со специалистом.
-            </div>
-        </div>
-        <div class="img-box">
-            <img th:src="@{/img/chat.png}" alt="" class="feature-img">
-        </div>
-    </section>
-
-    <hr class="divider-full">
-
-    <section class="cta-bottom-section">
-        <h2>Создайте заявку,<br>чтобы получить на нее ответ как можно скорее</h2>
-        <a th:href="@{/tickets/create}" class="btn btn-blue-main" style="padding: 12px 28px; font-size: 16px;">
+        <a th:unless="${#authorization.expression('hasRole(''ADMIN'')')}"
+           th:href="@{/tickets/create}"
+           class="btn btn-blue-main landing-button">
             Создать заявку
         </a>
+
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}"
+           th:href="@{/admin/tickets}"
+           class="btn btn-blue-main landing-button">
+            Панель администратора
+        </a>
+
     </section>
 
-</div>
+    <section class="landing-features">
 
-<footer class="footer">
-    <div>HelpDesk</div>
-    <div>Все права защищены</div>
-</footer>
+        <h2 class="section-title">
+            Возможности HelpDesk
+        </h2>
+
+        <article class="feature-row">
+
+            <span class="feature-check" aria-hidden="true">✓</span>
+
+            <div class="feature-text">
+
+                <h3>Помощь по любому вопросу</h3>
+
+                <p>
+                    Наши специалисты помогут разобраться
+                    с любым интересующим вас вопросом
+                    по нашему продукту.
+                </p>
+
+            </div>
+
+        </article>
+
+        <article class="feature-row">
+
+            <span class="feature-check" aria-hidden="true">✓</span>
+
+            <div class="feature-text">
+
+                <h3>Быстрый отклик на заявку</h3>
+
+                <p>
+                    Создавайте обращения и отслеживайте
+                    процесс их рассмотрения в личном кабинете.
+                </p>
+
+            </div>
+
+        </article>
+
+        <article class="feature-row">
+
+            <span class="feature-check" aria-hidden="true">✓</span>
+
+            <div class="feature-text">
+
+                <h3>Общение со специалистом</h3>
+
+                <p>
+                    Оставляйте комментарии в заявке
+                    и получайте ответы от службы поддержки.
+                </p>
+
+            </div>
+
+        </article>
+
+    </section>
+
+    <section class="cta-bottom-section"
+             th:unless="${#authorization.expression('hasRole(''ADMIN'')')}">
+
+        <h2>Нужна помощь?</h2>
+
+        <p>
+            Создайте заявку, и наши специалисты вам ответят.
+        </p>
+
+        <a th:href="@{/tickets/create}"
+           class="btn btn-blue-main landing-button">
+            Создать заявку
+        </a>
+
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>

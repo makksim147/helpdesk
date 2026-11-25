@@ -2,50 +2,120 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Заявка - HelpDesk</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Просмотр заявки - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
-<div class="navbar">
-    <div class="logo">HelpDesk</div>
-    <div class="nav-links">
-        <a th:href="@{/tickets/my}">Мои заявки</a>
-        <form th:action="@{/logout}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
-        </form>
-    </div>
-</div>
-<div class="container">
-    <a th:href="@{/tickets/my}" class="back-link">‹ Ко всем заявкам</a>
-    <h1 class="page-title" th:text="'Заявка №' + ${ticket.id}">Заявка №1</h1>
 
-    <div class="card details-list">
-        <div class="details-item">
-            <strong>Название</strong><span th:text="${ticket.title}"></span>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container">
+
+    <a th:href="@{/tickets/my}" class="back-link">
+        ← Мои заявки
+    </a>
+
+    <div class="page-heading heading-actions">
+
+        <div>
+            <h1 th:text="'Заявка №' + ${ticket.id}"></h1>
+            <p>Информация о вашем обращении</p>
         </div>
-        <div class="details-item">
-            <strong>Описание</strong><span th:text="${ticket.description}"></span>
-        </div>
-        <div class="details-item">
-            <strong>Категория</strong><span th:text="${ticket.category.name}"></span>
-        </div>
-        <div class="details-item">
-            <strong>Приоритет</strong><span th:text="${ticket.priority}"></span>
-        </div>
-        <div class="details-item">
-            <strong>Автор</strong><span th:text="${ticket.author.name}"></span>
-        </div>
-        <div class="details-item">
-            <strong>Статус</strong><span th:text="${ticket.status}"></span>
-        </div>
-        <div class="details-item">
-            <strong>Дата создания</strong>
-            <span th:text="${#temporals.format(ticket.createdAt, 'dd-MM-yyyy HH:mm')}"></span>
-        </div>
-        <div th:replace="~{fragments/comments :: commentsBlock(
-            @{/tickets/{id}/comments(id=${ticket.id})})}">
-        </div>
+
+        <span class="status-badge"
+              th:classappend="${'status-' + ticket.status.name()}"
+              th:text="${ticket.status.label}">
+        </span>
+
     </div>
-</div>
+
+    <div class="ticket-view-grid">
+
+        <section class="card">
+
+            <h2 class="ticket-view-title"
+                th:text="${ticket.title}">
+            </h2>
+
+            <div class="section-divider"></div>
+
+            <h3 class="description-title">
+                Описание проблемы
+            </h3>
+
+            <p class="ticket-description"
+               th:text="${ticket.description}">
+            </p>
+
+        </section>
+
+        <aside class="card">
+
+            <h2 class="card-title">
+                Информация о заявке
+            </h2>
+
+            <div class="section-divider"></div>
+
+            <ul class="info-list">
+
+                <li>
+                    <strong>Статус</strong>
+
+                    <span class="status-badge"
+                          th:classappend="${'status-' + ticket.status.name()}"
+                          th:text="${ticket.status.label}">
+                    </span>
+                </li>
+
+                <li>
+                    <strong>Приоритет</strong>
+
+                    <span class="priority-badge"
+                          th:classappend="${'priority-' + ticket.priority.name()}"
+                          th:text="${ticket.priority.label}">
+                    </span>
+                </li>
+
+                <li>
+                    <strong>Категория</strong>
+                    <span th:text="${ticket.category.name}"></span>
+                </li>
+
+                <li>
+                    <strong>Автор</strong>
+                    <span th:text="${ticket.author.name}"></span>
+                </li>
+
+                <li>
+                    <strong>Дата создания</strong>
+
+                    <span th:text="${#temporals.format(ticket.createdAt, 'dd.MM.yyyy HH:mm')}">
+                    </span>
+                </li>
+
+                <li th:if="${ticket.updatedAt != null}">
+
+                    <strong>Последнее обновление</strong>
+
+                    <span th:text="${#temporals.format(ticket.updatedAt, 'dd.MM.yyyy HH:mm')}">
+                    </span>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+    </div>
+
+    <div th:replace="~{fragments/comments :: commentsBlock(@{/tickets/{id}/comments(id=${ticket.id})})}">
+    </div>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
 </body>
 </html>

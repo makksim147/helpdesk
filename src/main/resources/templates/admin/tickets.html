@@ -2,147 +2,87 @@
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель администратора - HelpDesk</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/layout.css}">
 </head>
 <body>
 
-<div class="navbar">
-    <div class="logo">HelpDesk | Администратор</div>
+<div th:replace="~{fragments/header :: header}"></div>
 
-    <div class="nav-links">
+<main class="container">
 
-        <a th:href="@{/admin/tickets}">Все заявки</a>
-        <a th:href="@{/profile}">Профиль</a>
-
-        <form th:action="@{/logout}" method="post">
-            <button type="submit" class="btn btn-red">
-                Выйти
-            </button>
-        </form>
-
+    <div class="page-heading">
+        <h1>Панель администратора</h1>
+        <p>Управление обращениями пользователей</p>
     </div>
-</div>
 
-<div class="container">
+    <section class="stats-section">
 
-    <h1 class="page-title">Панель администратора</h1>
-
-    <div class="stats-section">
-
-        <h2>Статистика обращений</h2>
+        <h2 class="admin-section-title">
+            Статистика обращений
+        </h2>
 
         <div class="stats-grid">
 
-            <div class="stat-card stat-total">
-
-            <span class="stat-label">
-                Всего заявок
-            </span>
-
+            <article class="stat-card stat-total">
+                <span class="stat-label">Всего заявок</span>
                 <strong class="stat-value"
                         th:text="${statistics.total}">
-                    0
                 </strong>
+            </article>
 
-            </div>
-
-            <div class="stat-card stat-new">
-
-            <span class="stat-label">
-                Новые
-            </span>
-
+            <article class="stat-card stat-new">
+                <span class="stat-label">Новые</span>
                 <strong class="stat-value"
                         th:text="${statistics.newTickets}">
-                    0
                 </strong>
+            </article>
 
-            </div>
-
-            <div class="stat-card stat-progress">
-
-            <span class="stat-label">
-                В работе
-            </span>
-
+            <article class="stat-card stat-progress">
+                <span class="stat-label">В работе</span>
                 <strong class="stat-value"
                         th:text="${statistics.inProgress}">
-                    0
                 </strong>
+            </article>
 
-            </div>
-
-            <div class="stat-card stat-done">
-
-            <span class="stat-label">
-                Выполненные
-            </span>
-
+            <article class="stat-card stat-done">
+                <span class="stat-label">Выполненные</span>
                 <strong class="stat-value"
                         th:text="${statistics.done}">
-                    0
                 </strong>
+            </article>
 
-            </div>
-
-            <div class="stat-card stat-closed">
-
-            <span class="stat-label">
-                Закрытые
-            </span>
-
+            <article class="stat-card stat-closed">
+                <span class="stat-label">Закрытые</span>
                 <strong class="stat-value"
                         th:text="${statistics.closed}">
-                    0
                 </strong>
+            </article>
 
-            </div>
-
-            <div class="stat-card stat-high">
-
-            <span class="stat-label">
-                Высокий приоритет
-            </span>
-
+            <article class="stat-card stat-high">
+                <span class="stat-label">Высокий приоритет</span>
                 <strong class="stat-value"
                         th:text="${statistics.high}">
-                    0
                 </strong>
+            </article>
 
-            </div>
-
-            <div class="stat-card stat-critical">
-
-            <span class="stat-label">
-                Критический приоритет
-            </span>
-
+            <article class="stat-card stat-critical">
+                <span class="stat-label">Критический приоритет</span>
                 <strong class="stat-value"
                         th:text="${statistics.critical}">
-                    0
                 </strong>
-
-            </div>
+            </article>
 
         </div>
 
-    </div>
+    </section>
 
-    <div class="card" style="margin-bottom: 20px;">
+    <section class="card filter-card">
 
-        <h2>Управление заявками</h2>
+        <h2 class="card-title">Поиск и фильтрация</h2>
 
-        <p>
-            Найдено обращений:
-            <strong th:text="${tickets.size()}">0</strong>
-        </p>
-
-    </div>
-
-    <div class="card filter-card">
-
-        <h2>Поиск и фильтрация</h2>
+        <div class="section-divider"></div>
 
         <form th:action="@{/admin/tickets}"
               th:object="${filter}"
@@ -152,7 +92,7 @@
 
                 <div class="form-group">
 
-                    <label>Поиск</label>
+                    <label for="search">Поиск</label>
 
                     <input type="text"
                            th:field="*{search}"
@@ -162,7 +102,7 @@
 
                 <div class="form-group">
 
-                    <label>Статус</label>
+                    <label for="status">Статус</label>
 
                     <select th:field="*{status}">
 
@@ -179,7 +119,7 @@
 
                 <div class="form-group">
 
-                    <label>Категория</label>
+                    <label for="categoryId">Категория</label>
 
                     <select th:field="*{categoryId}">
 
@@ -196,7 +136,7 @@
 
                 <div class="form-group">
 
-                    <label>Приоритет</label>
+                    <label for="priority">Приоритет</label>
 
                     <select th:field="*{priority}">
 
@@ -213,17 +153,12 @@
 
                 <div class="form-group">
 
-                    <label>Сортировка</label>
+                    <label for="sort">Сортировка</label>
 
                     <select th:field="*{sort}">
 
-                        <option value="desc">
-                            Сначала новые
-                        </option>
-
-                        <option value="asc">
-                            Сначала старые
-                        </option>
+                        <option value="desc">Сначала новые</option>
+                        <option value="asc">Сначала старые</option>
 
                     </select>
 
@@ -233,8 +168,9 @@
 
             <div class="filter-actions">
 
-                <button type="submit" class="btn btn-green">
-                    Применить фильтры
+                <button type="submit"
+                        class="btn btn-blue-main">
+                    Применить
                 </button>
 
                 <a th:href="@{/admin/tickets}"
@@ -246,66 +182,125 @@
 
         </form>
 
-    </div>
+    </section>
 
-    <div class="table-wrapper"
-         th:if="${!tickets.isEmpty()}">
+    <section class="card tickets-card admin-tickets-card">
 
-        <table>
+        <div class="table-heading">
 
-            <thead>
-            <tr>
-                <th>№</th>
-                <th>Название</th>
-                <th>Автор</th>
-                <th>Категория</th>
-                <th>Приоритет</th>
-                <th>Статус</th>
-                <th>Дата</th>
-                <th>Действия</th>
-            </tr>
-            </thead>
+            <h2>Обращения пользователей</h2>
 
-            <tbody>
+            <span class="ticket-count"
+                  th:text="${tickets.size()}">
+            </span>
 
-            <tr th:each="t : ${tickets}">
+        </div>
 
-                <td th:text="${t.id}"></td>
+        <div class="table-wrapper"
+             th:unless="${tickets.isEmpty()}">
 
-                <td th:text="${t.title}"></td>
+            <table>
 
-                <td th:text="${t.author.name}"></td>
+                <thead>
 
-                <td th:text="${t.category.name}"></td>
+                <tr>
+                    <th>№</th>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Категория</th>
+                    <th>Приоритет</th>
+                    <th>Статус</th>
+                    <th>Дата создания</th>
+                    <th></th>
+                </tr>
 
-                <td th:text="${t.priority.label}"></td>
+                </thead>
 
-                <td th:text="${t.status.label}"></td>
+                <tbody>
 
-                <td th:text="${#temporals.format(
-                    t.createdAt, 'dd.MM.yyyy HH:mm')}">
-                </td>
+                <tr th:each="t : ${tickets}">
 
-                <td>
-                    <a th:href="@{/admin/tickets/{id}(id=${t.id})}"
-                       class="btn btn-gray">
-                        Открыть
-                    </a>
-                </td>
+                    <td class="ticket-id"
+                        th:text="'#' + ${t.id}">
+                    </td>
 
-            </tr>
+                    <td class="ticket-title"
+                        th:text="${t.title}">
+                    </td>
 
-            </tbody>
+                    <td>
 
-        </table>
+                        <div class="table-author">
 
-    </div>
+                            <span class="table-avatar"
+                                  th:text="${#strings.toUpperCase(#strings.substring(t.author.name, 0, 1))}">
+                            </span>
 
-    <div class="card" th:if="${tickets.isEmpty()}">
-        <p>По заданным параметрам заявки не найдены.</p>
-    </div>
+                            <span th:text="${t.author.name}"></span>
 
-</div>
+                        </div>
+
+                    </td>
+
+                    <td th:text="${t.category.name}"></td>
+
+                    <td>
+                        <span class="priority-badge"
+                              th:classappend="${'priority-' + t.priority.name()}"
+                              th:text="${t.priority.label}">
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="status-badge"
+                              th:classappend="${'status-' + t.status.name()}"
+                              th:text="${t.status.label}">
+                        </span>
+                    </td>
+
+                    <td class="ticket-date"
+                        th:text="${#temporals.format(t.createdAt, 'dd.MM.yyyy HH:mm')}">
+                    </td>
+
+                    <td>
+                        <a th:href="@{/admin/tickets/{id}(id=${t.id})}"
+                           class="table-link">
+                            Открыть →
+                        </a>
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="empty-state"
+             th:if="${tickets.isEmpty()}">
+
+            <div class="empty-icon">✓</div>
+
+            <h3>Заявки не найдены</h3>
+
+            <p>
+                По заданным параметрам обращения отсутствуют.
+                Попробуйте изменить параметры поиска.
+            </p>
+
+            <a th:href="@{/admin/tickets}"
+               class="btn btn-blue-main">
+                Сбросить фильтры
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 </body>
 </html>
