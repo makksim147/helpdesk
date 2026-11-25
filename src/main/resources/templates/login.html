@@ -19,7 +19,10 @@
         <div th:if="${param.registered}" style="color: green; margin-bottom: 10px;">
             Регистрация успешна! Войдите.
         </div>
-
+        <div class="success-message"
+             th:if="${param.emailChanged}">
+            Почта успешно изменена. Войдите в аккаунт заново.
+        </div>
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label>Почта</label>

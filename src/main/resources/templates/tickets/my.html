@@ -10,7 +10,10 @@
     <div class="logo">HelpDesk</div>
     <div class="nav-links">
         <a th:href="@{/tickets/my}">Мои заявки</a>
-        <span th:text="${username}">User</span>
+        <a th:href="@{/profile}"
+           th:text="${username}">
+            Профиль
+        </a>
         <form th:action="@{/logout}" method="post" style="display:inline;">
             <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
         </form>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль - HelpDesk</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="navbar">
+    <div class="logo">HelpDesk</div>
+
+    <div class="nav-links">
+        <a th:href="@{/tickets/my}">Мои заявки</a>
+        <a th:href="@{/profile}">Профиль</a>
+
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn btn-red">
+                Выйти
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="container">
+
+    <h1 class="page-title">Мой профиль</h1>
+
+    <div class="card profile-card">
+
+        <div class="profile-info">
+
+            <h2>Информация об аккаунте</h2>
+
+            <ul class="info-list">
+
+                <li>
+                    <strong>Имя</strong>
+                    <span th:text="${user.name}"></span>
+                </li>
+
+                <li>
+                    <strong>Электронная почта</strong>
+                    <span th:text="${user.email}"></span>
+                </li>
+
+                <li>
+                    <strong>Роль</strong>
+                    <span th:text="${user.role.name() == 'ADMIN'
+                        ? 'Администратор' : 'Пользователь'}">
+                    </span>
+                </li>
+
+                <li>
+                    <strong>Дата регистрации</strong>
+                    <span th:text="${#temporals.format(
+                        user.registeredAt, 'dd.MM.yyyy')}">
+                    </span>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <div class="profile-info">
+
+            <h2>Редактирование профиля</h2>
+
+            <p class="success-message"
+               th:if="${param.success}">
+                Данные успешно сохранены
+            </p>
+
+            <form th:action="@{/profile}"
+                  th:object="${profile}"
+                  method="post">
+
+                <div class="form-group">
+
+                    <label>Имя</label>
+
+                    <input type="text"
+                           th:field="*{name}"
+                           required>
+
+                    <div class="field-error"
+                         th:errors="*{name}"></div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Электронная почта</label>
+
+                    <input type="email"
+                           th:field="*{email}"
+                           required>
+
+                    <div class="field-error"
+                         th:errors="*{email}"></div>
+
+                </div>
+
+                <p class="profile-hint">
+                    При изменении почты потребуется
+                    повторная авторизация.
+                </p>
+
+                <button type="submit" class="btn btn-green">
+                    Сохранить изменения
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
