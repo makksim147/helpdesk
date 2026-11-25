@@ -6,46 +6,123 @@
   <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+
 <div class="navbar">
   <div class="logo">HelpDesk</div>
+
   <div class="nav-links">
+
     <a th:href="@{/tickets/my}">Мои заявки</a>
-    <form th:action="@{/logout}" method="post" style="display:inline;">
-      <button type="submit" class="btn btn-red" style="padding: 6px 14px;">Выйти</button>
+    <a th:href="@{/profile}">Профиль</a>
+
+    <form th:action="@{/logout}" method="post">
+      <button type="submit" class="btn btn-red">
+        Выйти
+      </button>
     </form>
+
   </div>
 </div>
+
 <div class="container">
+
   <h1 class="page-title">Создание новой заявки</h1>
+
   <div class="card" style="max-width: 600px;">
-    <form th:action="@{/tickets/create}" method="post">
+
+    <form th:action="@{/tickets/create}"
+          th:object="${ticketForm}"
+          method="post">
+
       <div class="form-group">
+
         <label>Название</label>
-        <input type="text" name="title" required>
+
+        <input type="text"
+               th:field="*{title}"
+               maxlength="200"
+               required>
+
+        <div class="field-error"
+             th:errors="*{title}"></div>
+
       </div>
+
       <div class="form-group">
+
         <label>Описание</label>
-        <textarea name="description" rows="5" required></textarea>
+
+        <textarea th:field="*{description}"
+                  rows="5"
+                  maxlength="5000"
+                  required></textarea>
+
+        <div class="field-error"
+             th:errors="*{description}"></div>
+
       </div>
+
       <div class="form-group">
+
         <label>Категория</label>
-        <select name="categoryId" required>
-          <option value="">-- Выберите категорию --</option>
-          <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+
+        <select th:field="*{categoryId}" required>
+
+          <option value="">
+            -- Выберите категорию --
+          </option>
+
+          <option th:each="c : ${categories}"
+                  th:value="${c.id}"
+                  th:text="${c.name}">
+          </option>
+
         </select>
+
+        <div class="field-error"
+             th:errors="*{categoryId}"></div>
+
       </div>
+
       <div class="form-group">
+
         <label>Приоритет</label>
-        <select name="priority" required>
-          <option th:each="p : ${priorities}" th:value="${p}" th:text="${p}"></option>
+
+        <select th:field="*{priority}" required>
+
+          <option value="">
+            -- Выберите приоритет --
+          </option>
+
+          <option th:each="p : ${priorities}"
+                  th:value="${p}"
+                  th:text="${p.label}">
+          </option>
+
         </select>
+
+        <div class="field-error"
+             th:errors="*{priority}"></div>
+
       </div>
+
       <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button type="submit" class="btn btn-green">Создать заявку</button>
-        <a th:href="@{/tickets/my}" class="btn btn-red">Отмена</a>
+
+        <button type="submit" class="btn btn-green">
+          Создать заявку
+        </button>
+
+        <a th:href="@{/tickets/my}" class="btn btn-red">
+          Отмена
+        </a>
+
       </div>
+
     </form>
+
   </div>
+
 </div>
+
 </body>
 </html>
