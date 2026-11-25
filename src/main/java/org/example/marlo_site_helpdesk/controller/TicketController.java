@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.example.marlo_site_helpdesk.service.CommentService;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,15 +22,18 @@ public class TicketController {
     private final TicketRepository ticketRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final CommentService commentService;
 
     public TicketController(
             TicketRepository ticketRepository,
             CategoryRepository categoryRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CommentService commentService) {
 
         this.ticketRepository = ticketRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
+        this.commentService = commentService;
     }
 
     @GetMapping("/my")
@@ -117,6 +120,11 @@ public class TicketController {
 
         model.addAttribute("ticket", ticket);
         model.addAttribute("username", auth.getName());
+
+        model.addAttribute(
+                "comments",
+                commentService.getComments(id, auth.getName())
+        );
 
         return "tickets/view";
     }

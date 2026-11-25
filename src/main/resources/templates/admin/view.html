@@ -118,6 +118,10 @@
 
             </div>
 
+            <div th:replace="~{fragments/comments :: commentsBlock(
+                @{/admin/tickets/{id}/comments(id=${ticket.id})})}">
+            </div>
+
         </div>
 
         <div>

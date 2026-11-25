@@ -2,11 +2,14 @@ package org.example.marlo_site_helpdesk.repository;
 
 import org.example.marlo_site_helpdesk.models.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long> {
+public interface TicketRepository extends
+        JpaRepository<Ticket, Long>,
+        JpaSpecificationExecutor<Ticket> {
 
     List<Ticket> findByAuthorEmailOrderByCreatedAtDesc(String email);
 

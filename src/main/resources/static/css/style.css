@@ -429,3 +429,117 @@ td:last-child, th:last-child { border-right: none; }
         grid-template-columns: 1fr;
     }
 }
+
+.comments-card {
+    margin-top: 20px;
+}
+
+.comments-card h2 {
+    margin-bottom: 20px;
+}
+
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.comment {
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #f9fafb;
+    min-width: 0;
+}
+
+.comment-admin {
+    border-left: 4px solid #16a34a;
+    background: #f0fdf4;
+}
+
+.comment-user {
+    border-left: 4px solid #64748b;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.comment-role {
+    font-size: 12px;
+    color: #64748b;
+    margin-left: 8px;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #64748b;
+}
+
+.comment-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+}
+
+.comment-form {
+    margin-top: 25px;
+}
+
+.comments-empty {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.comments-closed {
+    margin-top: 20px;
+    padding: 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.filter-card {
+    margin-bottom: 20px;
+}
+
+.filter-card h2 {
+    margin-bottom: 20px;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.filter-grid input,
+.filter-grid select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+@media (max-width: 900px) {
+    .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+}

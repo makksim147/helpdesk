@@ -33,9 +33,117 @@
         <h2>Управление заявками</h2>
 
         <p>
-            Всего обращений:
+            Найдено обращений:
             <strong th:text="${tickets.size()}">0</strong>
         </p>
+
+    </div>
+
+    <div class="card filter-card">
+
+        <h2>Поиск и фильтрация</h2>
+
+        <form th:action="@{/admin/tickets}"
+              th:object="${filter}"
+              method="get">
+
+            <div class="filter-grid">
+
+                <div class="form-group">
+
+                    <label>Поиск</label>
+
+                    <input type="text"
+                           th:field="*{search}"
+                           placeholder="Название или номер заявки">
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Статус</label>
+
+                    <select th:field="*{status}">
+
+                        <option value="">Все статусы</option>
+
+                        <option th:each="s : ${statuses}"
+                                th:value="${s}"
+                                th:text="${s.label}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Категория</label>
+
+                    <select th:field="*{categoryId}">
+
+                        <option value="">Все категории</option>
+
+                        <option th:each="c : ${categories}"
+                                th:value="${c.id}"
+                                th:text="${c.name}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Приоритет</label>
+
+                    <select th:field="*{priority}">
+
+                        <option value="">Все приоритеты</option>
+
+                        <option th:each="p : ${priorities}"
+                                th:value="${p}"
+                                th:text="${p.label}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Сортировка</label>
+
+                    <select th:field="*{sort}">
+
+                        <option value="desc">
+                            Сначала новые
+                        </option>
+
+                        <option value="asc">
+                            Сначала старые
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="filter-actions">
+
+                <button type="submit" class="btn btn-green">
+                    Применить фильтры
+                </button>
+
+                <a th:href="@{/admin/tickets}"
+                   class="btn btn-gray">
+                    Сбросить
+                </a>
+
+            </div>
+
+        </form>
 
     </div>
 
@@ -93,7 +201,7 @@
     </div>
 
     <div class="card" th:if="${tickets.isEmpty()}">
-        <p>Поступивших заявок пока нет.</p>
+        <p>По заданным параметрам заявки не найдены.</p>
     </div>
 
 </div>

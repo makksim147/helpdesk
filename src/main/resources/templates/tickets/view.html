@@ -42,6 +42,9 @@
             <strong>Дата создания</strong>
             <span th:text="${#temporals.format(ticket.createdAt, 'dd-MM-yyyy HH:mm')}"></span>
         </div>
+        <div th:replace="~{fragments/comments :: commentsBlock(
+            @{/tickets/{id}/comments(id=${ticket.id})})}">
+        </div>
     </div>
 </div>
 </body>

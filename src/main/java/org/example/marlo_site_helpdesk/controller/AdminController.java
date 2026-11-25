@@ -10,15 +10,31 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.example.marlo_site_helpdesk.service.CommentService;
+import org.springframework.security.core.Authentication;
+import org.example.marlo_site_helpdesk.dto.TicketFilterDto;
+import org.example.marlo_site_helpdesk.service.TicketService;
+import org.example.marlo_site_helpdesk.repository.CategoryRepository;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
     private final TicketRepository ticketRepository;
+    private final CommentService commentService;
+    private final TicketService ticketService;
+    private final CategoryRepository categoryRepository;
 
-    public AdminController(TicketRepository ticketRepository) {
+    public AdminController(
+            TicketRepository ticketRepository,
+            CommentService commentService,
+            TicketService ticketService,
+            CategoryRepository categoryRepository) {
+
         this.ticketRepository = ticketRepository;
+        this.commentService = commentService;
+        this.ticketService = ticketService;
+        this.categoryRepository = categoryRepository;
     }
 
     @GetMapping
@@ -27,12 +43,22 @@ public class AdminController {
     }
 
     @GetMapping("/tickets")
-    public String tickets(Model model) {
+    public String tickets(
+            @ModelAttribute("filter") TicketFilterDto filter,
+            Model model) {
 
         model.addAttribute(
                 "tickets",
-                ticketRepository.findAllByOrderByCreatedAtDesc()
+                ticketService.findTickets(filter)
         );
+
+        model.addAttribute(
+                "categories",
+                categoryRepository.findAll()
+        );
+
+        model.addAttribute("statuses", Status.values());
+        model.addAttribute("priorities", Priority.values());
 
         return "admin/tickets";
     }
@@ -40,7 +66,8 @@ public class AdminController {
     @GetMapping("/tickets/{id}")
     public String viewTicket(
             @PathVariable Long id,
-            Model model) {
+            Model model,
+            Authentication auth) {
 
         Ticket ticket = getTicket(id);
 
@@ -51,7 +78,7 @@ public class AdminController {
 
         model.addAttribute("ticketForm", dto);
 
-        fillModel(model, ticket);
+        fillModel(model, ticket, auth);
 
         return "admin/view";
     }
@@ -61,13 +88,14 @@ public class AdminController {
             @PathVariable Long id,
             @Valid @ModelAttribute("ticketForm") TicketUpdateDto dto,
             BindingResult bindingResult,
-            Model model) {
+            Model model,
+            Authentication auth) {
 
         Ticket ticket = getTicket(id);
 
         if (bindingResult.hasErrors()) {
 
-            fillModel(model, ticket);
+            fillModel(model, ticket, auth);
 
             return "admin/view";
         }
@@ -108,10 +136,21 @@ public class AdminController {
                 ));
     }
 
-    private void fillModel(Model model, Ticket ticket) {
+    private void fillModel(
+            Model model,
+            Ticket ticket,
+            Authentication auth) {
 
         model.addAttribute("ticket", ticket);
         model.addAttribute("statuses", Status.values());
         model.addAttribute("priorities", Priority.values());
+
+        model.addAttribute(
+                "comments",
+                commentService.getComments(
+                        ticket.getId(),
+                        auth.getName()
+                )
+        );
     }
 }

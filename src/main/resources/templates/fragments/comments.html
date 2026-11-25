@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="commentsBlock(actionUrl)"
+     class="card comments-card">
+
+    <h2>История переписки</h2>
+
+    <p class="comments-empty"
+       th:if="${comments.isEmpty()}">
+        Комментариев пока нет.
+    </p>
+
+    <div class="comments-list">
+
+        <div th:each="c : ${comments}"
+             class="comment"
+             th:classappend="${c.author.role.name() == 'ADMIN'
+                ? 'comment-admin' : 'comment-user'}">
+
+            <div class="comment-header">
+
+                <div>
+
+                    <strong th:text="${c.author.name}"></strong>
+
+                    <span class="comment-role"
+                          th:text="${c.author.role.name() == 'ADMIN'
+                            ? 'Поддержка' : 'Пользователь'}">
+                    </span>
+
+                </div>
+
+                <span class="comment-date"
+                      th:text="${#temporals.format(
+                        c.createdAt, 'dd.MM.yyyy HH:mm')}">
+                </span>
+
+            </div>
+
+            <div class="comment-text"
+                 th:text="${c.text}">
+            </div>
+
+        </div>
+
+    </div>
+
+    <form th:if="${ticket.status.name() != 'CLOSED'}"
+          th:action="${actionUrl}"
+          method="post"
+          class="comment-form">
+
+        <div class="form-group">
+
+            <label>Ваше сообщение</label>
+
+            <textarea name="text"
+                      rows="4"
+                      maxlength="3000"
+                      placeholder="Введите сообщение..."
+                      required></textarea>
+
+            <div class="field-error"
+                 th:if="${commentError != null}"
+                 th:text="${commentError}">
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-green">
+            Отправить сообщение
+        </button>
+
+    </form>
+
+    <div class="comments-closed"
+         th:if="${ticket.status.name() == 'CLOSED'}">
+
+        Заявка закрыта. Отправка сообщений недоступна.
+
+    </div>
+
+</div>
+
+</body>
+</html>
